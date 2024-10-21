@@ -69,7 +69,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<finalName>ChristianGonzalez-Cst323-O500</finalName>
 			</plugin>
 		</plugins>
 	</build>
