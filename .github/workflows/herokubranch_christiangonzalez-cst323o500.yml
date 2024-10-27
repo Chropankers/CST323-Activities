@@ -50,5 +50,4 @@ jobs:
         with:
           app-name: 'ChristianGonzalez-Cst323O500'
           slot-name: 'Production'
-          package: '*.jar'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9A05C79B46EB464089408DB237793302 }}
+          package: 'target/ChristianGonzalez-Cst323-O500-0.0.1-SNAPSHOT.jar'
