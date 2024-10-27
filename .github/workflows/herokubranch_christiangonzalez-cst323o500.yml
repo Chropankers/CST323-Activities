@@ -56,3 +56,5 @@ jobs:
         with:
           app-name: 'christiangonzalez-cst323o500'
           package: ${{ github.workspace }}/target/*.jar
+          enable-oryx-build: true
+          debug: true
