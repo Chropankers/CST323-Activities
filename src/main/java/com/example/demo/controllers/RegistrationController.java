@@ -1,5 +1,7 @@
 package com.example.demo.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,25 +18,32 @@ import jakarta.validation.Valid;
 
 @Controller
 public class RegistrationController {
+
+    private static final Logger logger = LoggerFactory.getLogger(RegistrationController.class);
+
     @Autowired
     private UserService userService;
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
+        logger.info("Entering showRegistrationForm method");
         model.addAttribute("user", new UserDTO());
+        logger.info("Exiting showRegistrationForm method");
         return "register";
     }
 
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("user") @Valid UserDTO userDTO, BindingResult result) {
+        logger.info("Entering registerUser method with user: {}", userDTO.getUsername());
         if (result.hasErrors()) {
-            return "register";  // Error in form validation
+            logger.error("Validation failed for user: {}", userDTO.getUsername());
+            return "register";
         }
 
-        // Convert UserDTO to User entity before saving
         User user = userService.convertToEntity(userDTO);
         userService.saveUser(user);
 
-        return "redirect:/success";  // Success page after registration
+        logger.info("User registration successful for user: {}", userDTO.getUsername());
+        return "redirect:/success";
     }
 }
