@@ -1,0 +1,49 @@
+@Service
+public class WasabiStorageService {
+
+    private final AmazonS3 s3Client;
+    private final FileMetadataRepository fileMetadataRepository;
+    @Value("${wasabi.bucketName}")
+    private String bucketName;
+
+    @Autowired
+    public WasabiStorageService(FileMetadataRepository fileMetadataRepository,
+                                @Value("${wasabi.accessKey}") String accessKey,
+                                @Value("${wasabi.secretKey}") String secretKey,
+                                @Value("${wasabi.endpoint}") String endpoint,
+                                @Value("${wasabi.region}") String region) {
+        this.fileMetadataRepository = fileMetadataRepository;
+        BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
+        this.s3Client = AmazonS3ClientBuilder.standard()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, region))
+                .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
+                .withPathStyleAccessEnabled(true)
+                .build();
+    }
+
+    public String uploadFile(MultipartFile file, Long userId, Long serverId) throws IOException {
+        String fileKey = "server" + serverId + "/user" + userId + "/" + file.getOriginalFilename();
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(file.getSize());
+        s3Client.putObject(new PutObjectRequest(bucketName, fileKey, file.getInputStream(), metadata));
+
+        FileMetadata fileMetadata = new FileMetadata();
+        fileMetadata.setUserId(userId);
+        fileMetadata.setServerId(serverId);
+        fileMetadata.setFileKey(fileKey);
+        fileMetadata.setFileName(file.getOriginalFilename());
+        fileMetadata.setBucketName(bucketName);
+        fileMetadataRepository.save(fileMetadata);
+
+        return "/files/" + userId + "/" + file.getOriginalFilename();
+    }
+
+    public S3Object downloadFile(Long userId, String fileName) {
+        Optional<FileMetadata> fileMetadataOpt = fileMetadataRepository.findByUserIdAndFileName(userId, fileName);
+        if (fileMetadataOpt.isPresent()) {
+            FileMetadata fileMetadata = fileMetadataOpt.get();
+            return s3Client.getObject(new GetObjectRequest(fileMetadata.getBucketName(), fileMetadata.getFileKey()));
+        }
+        throw new RuntimeException("File not found");
+    }
+}

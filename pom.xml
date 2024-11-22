@@ -35,18 +35,30 @@
         		<groupId>org.springframework.boot</groupId>
         		<artifactId>spring-boot-starter-thymeleaf</artifactId>
     		</dependency>
+			
     		<dependency>
         		<groupId>org.springframework.boot</groupId>
         		<artifactId>spring-boot-starter-web</artifactId>
     		</dependency>
+	    <!-- Spring Security -->
+    		<dependency>
+        		<groupId>org.springframework.boot</groupId>
+        		<artifactId>spring-boot-starter-security</artifactId>
+    		</dependency>
 
-    		<!-- Spring Boot Data JPA -->
+    	<!-- Spring Security OAuth2 -->
+    		<dependency>
+        		<groupId>org.springframework.boot</groupId>
+        		<artifactId>spring-boot-starter-oauth2-client</artifactId>
+    		</dependency>
+
+    	<!-- Spring Boot Data JPA -->
     		<dependency>
         		<groupId>org.springframework.boot</groupId>
         		<artifactId>spring-boot-starter-data-jpa</artifactId>
     		</dependency>
 
-    		<!-- Database Dependencies -->
+    	<!-- Database Dependencies -->
     		<dependency>
         		<groupId>org.postgresql</groupId>
         		<artifactId>postgresql</artifactId>
@@ -58,26 +70,26 @@
         		<scope>runtime</scope>
     		</dependency>
 
-    		<!-- Jakarta Persistence API -->
+    	<!-- Jakarta Persistence API -->
     		<dependency>
         		<groupId>jakarta.persistence</groupId>
         		<artifactId>jakarta.persistence-api</artifactId>
     		</dependency>
 
-    		<!-- Validation -->
+    	<!-- Validation -->
     		<dependency>
         		<groupId>jakarta.validation</groupId>
         		<artifactId>jakarta.validation-api</artifactId>
     		</dependency>
 
-    		<!-- Testing Dependencies -->
+    	<!-- Testing Dependencies -->
     		<dependency>
         		<groupId>org.springframework.boot</groupId>
         		<artifactId>spring-boot-starter-test</artifactId>
         		<scope>test</scope>
     		</dependency>
 
-    		<!-- Logging Dependencies -->
+    	<!-- Logging Dependencies -->
     		<dependency>
         		<groupId>org.slf4j</groupId>
         		<artifactId>slf4j-api</artifactId>
@@ -86,6 +98,16 @@
         		<groupId>ch.qos.logback</groupId>
         		<artifactId>logback-classic</artifactId>
     		</dependency>
+		<!-- AmazonAWS Dependencies-->
+			<dependency>
+        			<groupId>com.amazonaws</groupId>
+        			<artifactId>aws-java-sdk-s3</artifactId>
+        			<version>1.12.421</version>
+    		</dependency>
+		<!-- Authentication/Discord Dependencies-->
+			<dependency
+
+
 	</dependencies>
 
 
