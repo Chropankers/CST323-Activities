@@ -6,6 +6,7 @@ import com.example.demo.repository.UserRepository;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,6 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    // Method to convert UserDTO to User entity
     public User convertToEntity(UserDTO userDTO) {
         User user = new User();
         user.setFirstName(userDTO.getFirstName());
@@ -44,5 +44,19 @@ public class UserService {
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
         return user;
+    }
+
+    public User saveOrUpdateUserFromOAuth2(OAuth2User oauth2User) {
+        String discordId = oauth2User.getAttribute("id");
+        Optional<User> existingUser = userRepository.findByDiscordId(discordId);
+
+        User user = existingUser.orElse(new User());
+        user.setDiscordId(discordId);
+        user.setUsername(oauth2User.getAttribute("username"));
+        user.setAvatarUrl(oauth2User.getAttribute("avatar"));
+        user.setDiscriminator(oauth2User.getAttribute("discriminator"));
+        user.setUpdatedAt(java.time.LocalDateTime.now());
+
+        return userRepository.save(user);
     }
 }
