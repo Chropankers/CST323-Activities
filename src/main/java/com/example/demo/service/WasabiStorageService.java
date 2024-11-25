@@ -1,14 +1,15 @@
+package com.example.demo.service;
+
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-
-import java.io.IOException;
-import java.util.Optional;
-
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.example.demo.models.FileMetadata;
+import com.example.demo.repository.FileMetadataRepository;
 
 @Service
 public class WasabiStorageService {
