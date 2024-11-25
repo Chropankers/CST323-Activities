@@ -1,7 +1,9 @@
-package com.example.demo.service;
-
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+
+import java.io.IOException;
+import java.util.Optional;
+
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -31,22 +33,24 @@ public class WasabiStorageService {
                 .build();
     }
 
-    public String uploadFile(MultipartFile file, Long userId, Long serverId) throws IOException {
-        String fileKey = "server" + serverId + "/user" + userId + "/" + file.getOriginalFilename();
+    public String uploadFile(MultipartFile file, Long userId, Long serverId) throws IOException 
+    {
+        String fileKey = "server/" + serverId + "/user/" + userId + "/" + file.getOriginalFilename();
+
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
         s3Client.putObject(new PutObjectRequest(bucketName, fileKey, file.getInputStream(), metadata));
 
+        // Save metadata to database
         FileMetadata fileMetadata = new FileMetadata();
         fileMetadata.setUserId(userId);
         fileMetadata.setServerId(serverId);
         fileMetadata.setFileKey(fileKey);
-        fileMetadata.setFileName(file.getOriginalFilename());
-        fileMetadata.setBucketName(bucketName);
         fileMetadataRepository.save(fileMetadata);
 
-        return "/files/" + userId + "/" + file.getOriginalFilename();
+        return fileKey;
     }
+
 
     public S3Object downloadFile(Long userId, String fileName) {
         Optional<FileMetadata> fileMetadataOpt = fileMetadataRepository.findByUserIdAndFileName(userId, fileName);
@@ -56,4 +60,15 @@ public class WasabiStorageService {
         }
         throw new RuntimeException("File not found");
     }
+
+    public String getFileUrl(String fileKey) {
+        return s3Client.getUrl(bucketName, fileKey).toString();
+    }
+
+    public void testWasabiConnection() {
+        if (!s3Client.doesBucketExistV2(bucketName)) {
+            throw new RuntimeException("Bucket " + bucketName + " does not exist or cannot be accessed.");
+        }
+    }
+    
 }

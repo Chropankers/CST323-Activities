@@ -1,3 +1,5 @@
+package main.java.com.example.demo.controllers;
+
 @Controller
 public class DashboardController {
 
